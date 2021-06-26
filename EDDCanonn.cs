@@ -1,8 +1,6 @@
 ﻿//#define STAGING
 //#define NO_NETWORK
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static EDDDLLInterfaces.EDDDLLIF;
+using BaseUtils.JSON;
 
 namespace EDDCanonn
 {
@@ -35,7 +34,7 @@ namespace EDDCanonn
                     var e = definition["event"];
                     if (e == null) continue;
 
-                    m_whitelist.Add(e.ToString());
+                    m_whitelist.Add((string)e);
                 }
             }
             catch (Exception)
@@ -43,44 +42,45 @@ namespace EDDCanonn
                 return null;
             }
 
-            return "1.0.0.0";
+            return "1.1.0.0";
         }
 
         void LogCodexEntry(EDDDLLInterfaces.EDDDLLIF.JournalEntry entry)
         {
             if (!m_whitelist.Contains("CodexEntry")) return;
 
-            dynamic o = JsonConvert.DeserializeObject(entry.json);
+            JToken o = JToken.Parse(entry.json);
 
-            dynamic e = new JObject();
-            e.gameState = new JObject();
-            e.rawEvents = new JObject();
+            JObject e = new JObject();
+            JObject game_state = new JObject();
+            JObject raw_events = new JObject();
+            e["gameState"] = game_state;
 
             // Mandatories
-            e.gameState.systemName = o.System;
-            e.gameState.systemAddress = o.SystemAddress;
-            e.gameState.systemCoordinates = JArray.FromObject(new double[] { entry.x, entry.y, entry.z });
-            e.gameState.clientVersion = "EDDCanonn v1.0";
-            e.gameState.latitude = o.Latitude;
-            e.gameState.longitude = o.Longitude;
-            e.gameState.platform = "PC";
-            if (entry.islanded) e.gameState.bodyName = entry.whereami;
-            if (m_temperature >= 0) e.gameState.temperature = m_temperature;
+            game_state["systemName"] = o["System"];
+            game_state["systemAddress"] = o["SystemAddress"];
+            game_state["systemCoordinates"] = JArray.FromObject(new double[] { entry.x, entry.y, entry.z });
+            game_state["clientVersion"] = "EDDCanonn v1.1.0";
+            game_state["latitude"] = o["Latitude"];
+            game_state["longitude"] = o["Longitude"];
+            game_state["platform"] = "PC";
+            if (entry.islanded) game_state["bodyName"] = entry.whereami;
+            if (m_temperature >= 0) game_state["temperature"] = m_temperature;
 
 #if STAGING
-            e.gameState.isBeta = true;
-            e.cmdrName = "TEST";
+            game_state["isBeta"] = true;
+            e["cmdrName"] = "TEST";
 #else
-            e.gameState.isBeta = false;
-            e.cmdrName = entry.cmdrname;
+            game_state["isBeta"] = false;
+            e["cmdrName"] = entry.cmdrname;
 #endif
 
             // #todo?
-            //e.gameSystem.bodyId = "#todo";
+            //e["gameSystem"].bodyId = "#todo";
 
-            e.rawEvents = JArray.FromObject(new dynamic[1] { o });
+            e["rawEvents"] = JArray.Parse("[" + entry.json + "]");
 
-            string result = JsonConvert.SerializeObject(new dynamic[1] { e });
+            string result = "[" + e.ToString() + "]";
 
             // #todo handle response
             StringContent content = new StringContent(result, Encoding.UTF8, "application/json");
@@ -99,38 +99,39 @@ namespace EDDCanonn
         {
             if (!m_whitelist.Contains("ScanOrganic")) return;
 
-            dynamic o = JsonConvert.DeserializeObject(entry.json);
+            JToken o = JToken.Parse(entry.json);
 
-            dynamic e = new JObject();
-            e.gameState = new JObject();
-            e.rawEvents = new JObject();
+            JObject e = new JObject();
+            JObject game_state = new JObject();
+            JObject raw_events = new JObject();
+            e["gameState"] = game_state;
 
             // Mandatories
-            e.gameState.systemName = entry.systemname;
-            e.gameState.systemAddress = o.SystemAddress;
-            e.gameState.systemCoordinates = JArray.FromObject(new double[] { entry.x, entry.y, entry.z });
-            e.gameState.clientVersion = "EDDCanonn v1.0";
-            e.gameState.bodyName = entry.whereami;
-            e.gameState.bodyId = o.Body;
-            e.gameState.platform = "PC";
-            e.gameState.odyssey = true;
-            if (m_temperature >= 0) e.gameState.temperature = m_temperature;
+            game_state["systemName"] = entry.systemname;
+            game_state["systemAddress"] = o["SystemAddress"];
+            game_state["systemCoordinates"] = JArray.FromObject(new double[] { entry.x, entry.y, entry.z });
+            game_state["clientVersion"] = "EDDCanonn v1.0";
+            game_state["bodyName"] = entry.whereami;
+            game_state["bodyId"] = o["Body"];
+            game_state["platform"] = "PC";
+            game_state["odyssey"] = true;
+            if (m_temperature >= 0) game_state["temperature"] = m_temperature;
 
 #if STAGING
-            e.gameState.isBeta = true;
-            e.cmdrName = "TEST";
+            game_state["isBeta"] = true;
+            e["cmdrName"] = "TEST";
 #else
-            e.gameState.isBeta = false;
-            e.cmdrName = entry.cmdrname;
+            game_state["isBeta"] = false;
+            e["cmdrName"] = entry.cmdrname;
 #endif
 
             // #todo?
-            //e.gameState.latitude = "#todo";
-            //e.gameState.longitude = "#todo";
+            //game_state["latitude"] = "#todo";
+            //game_state["longitude"] = "#todo";
 
-            e.rawEvents = JArray.FromObject(new dynamic[1] { o });
+            e["rawEvents"] = JArray.Parse("[" + entry.json + "]");
 
-            string result = JsonConvert.SerializeObject(new dynamic[1] { e });
+            string result = "[" + e.ToString() + "]";
 
             // #todo handle response
             StringContent content = new StringContent(result, Encoding.UTF8, "application/json");
@@ -164,20 +165,22 @@ namespace EDDCanonn
             System.Diagnostics.Debug.WriteLine("Refresh");
         }
 
-        void UpdateTemperature(dynamic o)
+        void UpdateTemperature(JToken o)
         {
-            m_temperature = o.Temperature;
+            m_temperature = (double)o["Temperature"];
         }
 
-        void UpdateOverallStatus(dynamic o)
+        void UpdateOverallStatus(JToken o)
         {
-            m_temperature = o.Temperature;
+            m_temperature = (double)o["Temperature"];
         }
 
         public void EDDNewUIEvent(string json)
         {
-            dynamic o = JsonConvert.DeserializeObject(json);
-            string type = o.EventTypeStr;
+            JToken o = JToken.Parse(json);
+            if (o == null) return;
+
+            string type = (string)(o["EventTypeStr"]);
             switch (type)
             {
                 case "Temperature":

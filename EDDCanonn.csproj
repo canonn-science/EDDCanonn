@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BaseUtils">
+      <HintPath>external\BaseUtils\BaseUtils.dll</HintPath>
+    </Reference>
     <Reference Include="EDDDLLInterfaces">
       <HintPath>external\EDDDLLInterfaces\EDDDLLInterfaces.dll</HintPath>
     </Reference>
@@ -47,11 +50,6 @@
   <ItemGroup>
     <Compile Include="EDDCanonn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
