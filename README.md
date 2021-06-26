@@ -7,8 +7,7 @@ EDDCanonn is a native plugin for [EDDiscovery](https://github.com/EDDiscovery/ED
 EDDCanonn sends Codex Discovery and Scan Organic entries to the Canonn database.
 
 ## How do I install EDDCanonn?
-To install EDDCanonn copy the following two files
+To install EDDCanonn copy the following file
 - EDDCanonn.dll 
-- Newtonsoft.Json.dll 
 
 to the _%localappdata%\EDDiscovery\DLL_ folder.
