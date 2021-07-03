@@ -1,1 +1,1 @@
-Put BaseUtils.dll from EDDiscovery/BaseUtilities in this folder.
+This is a subset of EDDiscovery/BaseUtilities.

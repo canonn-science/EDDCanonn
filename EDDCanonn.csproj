@@ -32,14 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BaseUtils">
-      <HintPath>external\BaseUtils\BaseUtils.dll</HintPath>
-    </Reference>
     <Reference Include="EDDDLLInterfaces">
       <HintPath>external\EDDDLLInterfaces\EDDDLLInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +47,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EDDCanonn.cs" />
+    <Compile Include="external\BaseUtils\CHash\TypeHelpers.cs" />
+    <Compile Include="external\BaseUtils\Conditions\ConditionEntry.cs" />
+    <Compile Include="external\BaseUtils\Dates\DateObjectExtensions.cs" />
+    <Compile Include="external\BaseUtils\JSON\JSONFluentFormatter.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSON.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONArray.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONDeepEquals.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONFromObject.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONGets.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONObject.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONParse.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONTokenReader.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONToObject.cs" />
+    <Compile Include="external\BaseUtils\JSON\QuickJSONToString.cs" />
+    <Compile Include="external\BaseUtils\Numbers\NumberObjectExtensions.cs" />
+    <Compile Include="external\BaseUtils\StringParsers\IStringParserQuick.cs" />
+    <Compile Include="external\BaseUtils\StringParsers\StringParser.cs" />
+    <Compile Include="external\BaseUtils\StringParsers\StringParserQuick.cs" />
+    <Compile Include="external\BaseUtils\StringParsers\StringParserQuickTextReader.cs" />
+    <Compile Include="external\BaseUtils\Strings\StringObjectExtensions.cs" />
+    <Compile Include="external\BaseUtils\Strings\StringObjectExtensionsEscape.cs" />
+    <Compile Include="external\BaseUtils\Strings\StringObjectExtensionsLines.cs" />
+    <Compile Include="external\BaseUtils\Strings\StringObjectExtensionsNumbers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

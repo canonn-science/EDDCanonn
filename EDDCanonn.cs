@@ -42,7 +42,7 @@ namespace EDDCanonn
                 return null;
             }
 
-            return "1.1.0.0";
+            return "1.1.0.0;" + FLAG_PLAYLASTFILELOAD;
         }
 
         void LogCodexEntry(EDDDLLInterfaces.EDDDLLIF.JournalEntry entry)
@@ -190,6 +190,11 @@ namespace EDDCanonn
                     UpdateOverallStatus(o);
                     break;
             }
+        }
+
+        public void EDDTerminate()
+        {
+            // Nothing to do here
         }
 
         HashSet<string> m_whitelist = new HashSet<string>();
