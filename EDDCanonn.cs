@@ -1,5 +1,5 @@
-﻿//#define STAGING
-//#define NO_NETWORK
+﻿#define STAGING
+#define NO_NETWORK
 
 using System;
 using System.Collections.Generic;
@@ -19,35 +19,40 @@ namespace EDDCanonn
         public string EDDInitialise(string vstr, string dllfolder, EDDDLLInterfaces.EDDDLLIF.EDDCallBacks edd)
         {
             // Check whitelist
-            try
+            Task.Run(() =>
             {
-                HttpWebRequest request = WebRequest.Create("https://us-central1-canonn-api-236217.cloudfunctions.net/postEventWhitelist") as HttpWebRequest;
-                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                string body = reader.ReadToEnd();
-                JArray whitelist = JArray.Parse(body);
-                foreach (JObject l in whitelist)
+                try
                 {
-                    var definition = l["definition"];
-                    if (definition == null) continue;
+                    HttpWebRequest request = WebRequest.Create("https://us-central1-canonn-api-236217.cloudfunctions.net/postEventWhitelist") as HttpWebRequest;
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    StreamReader reader = new StreamReader(response.GetResponseStream());
+                    string body = reader.ReadToEnd();
+                    JArray whitelist = JArray.Parse(body);
+                    foreach (JObject l in whitelist)
+                    {
+                        var definition = l["definition"];
+                        if (definition == null) continue;
 
-                    var e = definition["event"];
-                    if (e == null) continue;
+                        var e = definition["event"];
+                        if (e == null) continue;
 
-                    m_whitelist.Add((string)e);
+                        m_whitelist.Add((string)e);
+                    }
+
+                    m_whitelist_initialized = true;
                 }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+                catch (Exception)
+                {
+                    return;
+                }
+            });
 
-            return "1.1.0.0;" + FLAG_PLAYLASTFILELOAD;
+            return "1.1.2.0";
         }
 
         void LogCodexEntry(EDDDLLInterfaces.EDDDLLIF.JournalEntry entry)
         {
-            if (!m_whitelist.Contains("CodexEntry")) return;
+            if (!m_whitelist_initialized || !m_whitelist.Contains("CodexEntry")) return;
 
             JToken o = JToken.Parse(entry.json);
 
@@ -97,7 +102,7 @@ namespace EDDCanonn
 
         void LogScanOrganic(EDDDLLInterfaces.EDDDLLIF.JournalEntry entry)
         {
-            if (!m_whitelist.Contains("ScanOrganic")) return;
+            if (!m_whitelist_initialized || !m_whitelist.Contains("ScanOrganic")) return;
 
             JToken o = JToken.Parse(entry.json);
 
@@ -200,5 +205,8 @@ namespace EDDCanonn
         HashSet<string> m_whitelist = new HashSet<string>();
         HttpClient m_client = new HttpClient();
         double m_temperature = -1;
+
+        // Whitelist is not multithread-safe, so we defer any use of the whitelist to after it's fully initialized
+        bool m_whitelist_initialized = false;
     }
 }
