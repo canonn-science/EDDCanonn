@@ -1,5 +1,5 @@
-﻿#define STAGING
-#define NO_NETWORK
+﻿//#define STAGING
+//#define NO_NETWORK
 
 using System;
 using System.Collections.Generic;
@@ -157,10 +157,10 @@ namespace EDDCanonn
             switch (type)
             {
                 case "CodexEntry":
-                    LogCodexEntry(entry);
+                    Task.Run(() => LogCodexEntry(entry));
                     break;
                 case "ScanOrganic":
-                    LogScanOrganic(entry);
+                    Task.Run(() => LogScanOrganic(entry));
                     break;
             }
         }
