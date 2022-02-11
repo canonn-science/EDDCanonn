@@ -65,7 +65,7 @@ namespace EDDCanonn
             game_state["systemName"] = o["System"];
             game_state["systemAddress"] = o["SystemAddress"];
             game_state["systemCoordinates"] = JArray.FromObject(new double[] { entry.x, entry.y, entry.z });
-            game_state["clientVersion"] = "EDDCanonn v1.1.0";
+            game_state["clientVersion"] = "EDDCanonn v1.1.1";
             game_state["latitude"] = o["Latitude"];
             game_state["longitude"] = o["Longitude"];
             game_state["platform"] = "PC";
@@ -115,7 +115,7 @@ namespace EDDCanonn
             game_state["systemName"] = entry.systemname;
             game_state["systemAddress"] = o["SystemAddress"];
             game_state["systemCoordinates"] = JArray.FromObject(new double[] { entry.x, entry.y, entry.z });
-            game_state["clientVersion"] = "EDDCanonn v1.0";
+            game_state["clientVersion"] = "EDDCanonn v1.1.1";
             game_state["bodyName"] = entry.whereami;
             game_state["bodyId"] = o["Body"];
             game_state["platform"] = "PC";
