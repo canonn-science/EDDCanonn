@@ -69,7 +69,7 @@ namespace EDDCanonn
             game_state["latitude"] = o["Latitude"];
             game_state["longitude"] = o["Longitude"];
             game_state["platform"] = "PC";
-            if (entry.islanded) game_state["bodyName"] = entry.whereami;
+            game_state["bodyName"] = entry.whereami;
             if (m_temperature >= 0) game_state["temperature"] = m_temperature;
 
 #if STAGING
